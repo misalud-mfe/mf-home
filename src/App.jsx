@@ -33,7 +33,7 @@ const App = () => {
         <div style={{ flex: 1, padding: 20 }}>
           <h1>Misalud Historia Clinica</h1>
           
-        {dato && <div>Dato recibido: {JSON.stringify(dato)}</div>}
+        {dato && <div>Usuario: {JSON.stringify(dato.numdocidentidad)}</div>}
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/login" element={<Login />} />
