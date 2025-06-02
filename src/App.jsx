@@ -13,10 +13,10 @@ const Login = lazy(() => import("login/Login"));
 
 const MainLayout = ({ dato }) => (
   <div style={{ display: 'flex' }}>
-    <Sidebar />
+    <Sidebar dato={dato} />
     <div style={{ flex: 1, padding: 20 }}>
       <h1>Misalud Historia Clinica</h1>
-      {dato && <div>Usuario: {JSON.stringify(dato.numdocidentidad)}</div>}
+    
       <Outlet />
     </div>
   </div>
@@ -53,10 +53,8 @@ const App = () => {
 
       <Suspense fallback={<Loading />}>
         <Routes>
-          {/* Login layout */}
           <Route path="/login" element={<LoginLayout />} />
 
-          {/* Main layout con rutas protegidas */}
           <Route element={<MainLayout dato={dato} />}>
             <Route
               path="/atendidos"

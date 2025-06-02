@@ -18,7 +18,7 @@ const activeStyle = {
 };
 
 
-const Sidebar = () => (
+const Sidebar = ({dato}) => (
  <aside
     style={{
       width: 240,
@@ -54,6 +54,7 @@ const Sidebar = () => (
     }}>
       MISALUD
     </h2>
+      {dato && <div style={{paddingBottom:12}}>Usuario: {dato.numdocidentidad}</div>}
     <nav style={{ width: '100%' }}>
       <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
         <li style={{ marginBottom: 10 }}>
