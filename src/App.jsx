@@ -5,7 +5,7 @@ import Sidebar from './components/sidebar/Sidebar';
 import Loading from './components/loading/Loading';
 import Auth from './components/auth/Auth';
 import { bus } from "common-utils";
-
+import Navbar from './components/navbar/Navbar';
 
 const Atendidos = lazy(() => import("atendidos/Atendidos"));
 const Pendientes = lazy(() => import("pendientes/Pendientes"));
@@ -16,7 +16,9 @@ const Login = lazy(() => import("login/Login"));
 const MainLayout = ({ dato }) => (
   <div style={{ display: 'flex' }}>
     <Sidebar dato={dato} />
+    
     <div style={{ flex: 1, padding: 20 }}>
+      <Navbar />
       <h1>Misalud Historia Clinica</h1>
     
       <Outlet />
