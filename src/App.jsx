@@ -1,10 +1,9 @@
 
 import React, { lazy, Suspense, useEffect, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate, Outlet} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate, Outlet } from 'react-router-dom'
 import Sidebar from './components/sidebar/Sidebar';
 import Loading from './components/loading/Loading';
 import Auth from './components/auth/Auth';
-import { bus } from "common-utils";
 import Navbar from './components/navbar/Navbar';
 
 const Atendidos = lazy(() => import("atendidos/Atendidos"));
@@ -16,11 +15,11 @@ const Login = lazy(() => import("login/Login"));
 const MainLayout = ({ dato }) => (
   <div style={{ display: 'flex' }}>
     <Sidebar dato={dato} />
-    
+
     <div style={{ flex: 1, padding: 20 }}>
       <Navbar />
       <h1>Misalud Historia Clinica</h1>
-    
+
       <Outlet />
     </div>
   </div>
@@ -38,19 +37,8 @@ const LoginLayout = () => (
 const App = () => {
   const [dato, setDato] = useState(null)
 
-
- useEffect(() => {
-    const subscription = bus.subscribe((msg) => {
-      if (msg.topic === "atendidos") {
-        console.log("test -------------", msg.data);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-  
   return (
-   <Router>
+    <Router>
       <Auth setDato={setDato} />
       <Suspense fallback={<Loading />}>
         <Routes>
