@@ -1,9 +1,11 @@
+
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate, Outlet} from 'react-router-dom'
 import Sidebar from './components/sidebar/Sidebar';
 import Loading from './components/loading/Loading';
 import Auth from './components/auth/Auth';
 import { bus } from "common-utils";
+
 
 const Atendidos = lazy(() => import("atendidos/Atendidos"));
 const Pendientes = lazy(() => import("pendientes/Pendientes"));
@@ -31,8 +33,6 @@ const LoginLayout = () => (
   </div>
 );
 
-
-
 const App = () => {
   const [dato, setDato] = useState(null)
 
@@ -50,7 +50,6 @@ const App = () => {
   return (
    <Router>
       <Auth setDato={setDato} />
-
       <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/login" element={<LoginLayout />} />
