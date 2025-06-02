@@ -1,7 +1,8 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate, Outlet} from 'react-router-dom'
 import Sidebar from './components/sidebar/Sidebar';
 import Loading from './components/loading/Loading';
+import Auth from './components/auth/Auth';
 import { bus } from "common-utils";
 
 const Atendidos = lazy(() => import("atendidos/Atendidos"));
@@ -10,40 +11,72 @@ const Transferencias = lazy(() => import("transferencias/Transferencias"));
 const Login = lazy(() => import("login/Login"));
 
 
+const MainLayout = ({ dato }) => (
+  <div style={{ display: 'flex' }}>
+    <Sidebar />
+    <div style={{ flex: 1, padding: 20 }}>
+      <h1>Misalud Historia Clinica</h1>
+      {dato && <div>Usuario: {JSON.stringify(dato.numdocidentidad)}</div>}
+      <Outlet />
+    </div>
+  </div>
+);
+
+// Layout para login (sin sidebar)
+const LoginLayout = () => (
+  <div >
+    <Suspense fallback={<Loading />}>
+      <Login />
+    </Suspense>
+  </div>
+);
+
+
+
 const App = () => {
   const [dato, setDato] = useState(null)
 
-  useEffect(() => {
-  const suscription = bus.subscribe((msg) => {
-    if (msg.type === 'LOGIN_SUCCESS') {
-      setDato(msg.payload);
-      console.log('Dato recibido:', msg.payload);
-    }
-  });
-  return () => {
-    suscription.unsubscribe();
-    console.log('Unsubscribed from bus');
-  };
-}, []);
+
+ useEffect(() => {
+    const subscription = bus.subscribe((msg) => {
+      if (msg.topic === "atendidos") {
+        console.log("test -------------", msg.data);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
   
   return (
-    <Router>
-      <div style={{ display: 'flex' }}>
-        <Sidebar />
-        <div style={{ flex: 1, padding: 20 }}>
-          <h1>Misalud Historia Clinica</h1>
-          
-        {dato && <div>Usuario: {JSON.stringify(dato.numdocidentidad)}</div>}
-          <Suspense fallback={<Loading />}>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/atendidos" element={<Atendidos />} />
-              <Route path="/pendientes" element={<Pendientes />} />
-              <Route path="/transferencias" element={<Transferencias />} />
-            </Routes>
-          </Suspense>
-        </div>
-      </div>
+   <Router>
+      <Auth setDato={setDato} />
+
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          {/* Login layout */}
+          <Route path="/login" element={<LoginLayout />} />
+
+          {/* Main layout con rutas protegidas */}
+          <Route element={<MainLayout dato={dato} />}>
+            <Route
+              path="/atendidos"
+              element={dato ? <Atendidos /> : <Navigate to="/login" replace />}
+            />
+            <Route
+              path="/pendientes"
+              element={dato ? <Pendientes /> : <Navigate to="/login" replace />}
+            />
+            <Route
+              path="/transferencias"
+              element={dato ? <Transferencias /> : <Navigate to="/login" replace />}
+            />
+            <Route
+              path="*"
+              element={<Navigate to={dato ? "/atendidos" : "/login"} replace />}
+            />
+          </Route>
+        </Routes>
+      </Suspense>
     </Router>
   )
 }
